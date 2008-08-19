@@ -1,0 +1,12 @@
+Description:
+    The task_queue migration generator creates a migration for the TaskQueue
+    model.
+
+    The generator creates a migration class in db/migrate prefixed by its
+    number in the queue of migrations.
+
+Example:
+    ./script/generate task_queue_migration
+
+    With 4 existing migrations, this will create an TaskQueueMigration
+    migration in the file db/migrate/5_task_queue_migration.rb

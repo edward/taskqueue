@@ -1,0 +1,57 @@
+=TaskQueue
+
+TaskQueue makes it simple to schedule (probably non-urgent) method calls by storing 
+
+  * a reference to your target object, 
+  * the method to call on it,
+  * any arguments to pass to that method,
+  * when you want it to happen
+
+At the moment, it's just another copy of your Rails app server running as a daemon service. It'd be nice to move this to a lighter server or a DRb instance or something.
+
+Example usage:
+
+  u = User.find :first
+  TaskQueue.schedule(u, :send_password_reset_mail)
+  TaskQueue.schedule(u, :send_witty_but_sincere_letter, 2.days.from_now)
+  TaskQueue.schedule(u, :set_status, "awesome")
+  TaskQueue.schedule(u, :set_status, "ambivalent", Time.now.tomorrow)
+
+== Possible bugs
+
+  * running multiple TaskQueue daemons is a bad idea due to the possibility of race conditions (i.e. there's no locking happening to prevent tasks from being executed more than once).
+
+== Todo
+  * Add logging
+  * Add a flag not to fork/daemonize
+  * Write a TaskQueue.schedule_code to allow delayed/asynchronous evaluation of code
+
+== Installation
+
+  ruby script/plugin install git://github.com/edward/taskqueue.git
+
+=== Prepare database
+
+Generate and apply the migration:
+
+  ruby script/generate task_queue_migration
+  rake db:migrate
+  
+Fire this puppy up:
+
+  ruby script/task_queue_daemon start
+
+Shut 'er down:
+
+  ruby script/task_queue_daemon stop
+
+Restart the task queue daemon:
+
+  ruby script/task_queue_daemon restart
+
+== Usage
+
+  c = Customer.find :first
+  TaskQueue.schedule c, :to_salesforce, Date.today+1
+
+Copyright (c) 2007 Edward Ocampo-Gooding, Patrick Ritchie, released under the MIT license

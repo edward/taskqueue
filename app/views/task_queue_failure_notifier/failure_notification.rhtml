@@ -1,0 +1,9 @@
+The following task has failed to run after being rescheduled <%= TaskQueue::MAX_RETRIES %> times
+due to an exception being thrown:
+
+<%= "#{@email_prefix}#{@tq.resource}.#{@tq.method_name.to_s}(#{@tq.arguments.join(", ")[0..500]}) : (#{@exception})" %>
+
+Originally scheduled to execute at <%= "#{@tq.execute_at - (2 ** @tq.times_rescheduled).minutes}" %>
+
+Error preventing its successful execution:
+<%= @exception %>

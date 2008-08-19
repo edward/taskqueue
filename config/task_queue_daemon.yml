@@ -1,0 +1,12 @@
+# Set the environment the task queue should run as here
+RAILS_ENV: development
+
+# These sleeping times are measured in seconds, though floats may be used as well
+development:
+  sleep_time: 5
+  
+test:
+  sleep_time: 0.5
+    
+production:
+  sleep_time: 300

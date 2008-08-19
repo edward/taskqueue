@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + '/../config/environment.rb'
+
+  require 'rubygems'; require 'ruby-debug'; debugger
+
+class TaskQueueDaemon < Daemon::Base
+  
+  @config = YAML.load_file("#{RAILS_ROOT}/config/task_queue_daemon.yml")
+  @config = @config[RAILS_ENV].to_options
+  
+  @sleep_time = @config.delete(:sleep_time) || 60
+  
+  def self.start
+    puts "Starting TaskQueueDaemon"
+    puts "Running TaskQueue.execute_current every #{@sleep_time} seconds"
+    
+    loop do
+      TaskQueue.execute_current
+      sleep(@sleep_time)
+    end
+  end
+  
+  def self.stop
+    puts "Stopping TaskQueueDaemon"
+  end
+  
+end
+
+TaskQueueDaemon.daemonize
